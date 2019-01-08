@@ -21,12 +21,10 @@ public class wheelBehaviour : MonoBehaviour
     {
         if(grabbedObject == gameObject && holdingController == null)
         {
-            SpringJoint sj = gameObject.AddComponent<SpringJoint>();
+            FixedJoint sj = gameObject.AddComponent<FixedJoint>();
             sj.connectedBody = controller.GetComponent<Rigidbody>();
-            sj.spring = 50;
-            sj.damper = 0;
-            sj.breakForce = 20000;
-            sj.breakTorque = 20000;
+            sj.breakForce = Mathf.Infinity;
+            sj.breakTorque = Mathf.Infinity;
             holdingController = controller;
             Debug.Log("grabbbb");
         }
@@ -38,21 +36,23 @@ public class wheelBehaviour : MonoBehaviour
         {
             ci = other.GetComponent<PlayerControllerVR>();
             ci.onGrabPressed -= PlayerControllerVR_onGrabPressed;
-            ci.onGrabReleased -= PlayerControllerVR_onGrabReleased;
         }
     }
 
-    private void PlayerControllerVR_onGrabReleased(GameObject grabbedObject, GameObject controller)
+    private void PlayerControllerVR_onGrabReleased(GameObject controller)
     {
-        if (grabbedObject == gameObject && controller == holdingController)
+        if (controller == holdingController)
         {
-            SpringJoint sj = gameObject.GetComponent<SpringJoint>();
+            FixedJoint sj = gameObject.GetComponent<FixedJoint>();
             if(sj != null)
             {
                 sj.connectedBody = null;
                 Destroy(sj);
                 Debug.Log("ungrabbbb");
             }
+
+            ci.onGrabReleased -= PlayerControllerVR_onGrabReleased;
+            holdingController = null;
         }
     }
 }

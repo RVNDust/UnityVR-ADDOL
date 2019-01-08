@@ -5,8 +5,10 @@ using UnityEngine.UI;
 using UnityEngine.Networking;
 using System.IO;
 using Valve.Newtonsoft.Json.Linq;
+using TMPro;
 
-public class GetWeather : MonoBehaviour {
+public class GetWeather : MonoBehaviour
+{
 
     //TODO aller chercher les infos dans un fichier json
     private string request = "http://api.openweathermap.org/data/2.5/weather?q=";
@@ -14,8 +16,11 @@ public class GetWeather : MonoBehaviour {
     private string unit = "&units=";
     private string apiKey = "&appid=";
 
-    public Text temperature;
-    public Text weather;
+    public TextMeshProUGUI temperature;
+    public TextMeshProUGUI weather;
+    public Material defaultWeather;
+    public Material cloudy;
+    public Material rainy;
 
     void Start()
     {
@@ -32,7 +37,8 @@ public class GetWeather : MonoBehaviour {
             var jobj = JObject.Parse(json);
             foreach (var item in jobj.Properties())
             {
-                switch (item.Name){
+                switch (item.Name)
+                {
                     case "city":
                         city += item.Value.ToString();
                         break;
@@ -71,6 +77,22 @@ public class GetWeather : MonoBehaviour {
                     Debug.Log(main.weather[0].main);
                     temperature.text = main.main.temp.ToString();
                     weather.text = main.weather[0].main;
+
+                    switch(main.weather[0].description)
+                    {
+                        case "clear sky":
+                            RenderSettings.skybox = defaultWeather;
+                            break;
+                        case "scattered clouds":
+                            RenderSettings.skybox = cloudy;
+                            break;
+                        case "broken clouds":
+                            RenderSettings.skybox = rainy;
+                            break;
+                        default:
+                            RenderSettings.skybox = defaultWeather;
+                            break;
+                    }
                 }
             }
         }

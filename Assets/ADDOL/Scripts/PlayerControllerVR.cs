@@ -16,7 +16,7 @@ public class PlayerControllerVR : MonoBehaviour
     public delegate void OnGrabPressed(GameObject grabbedObject, GameObject controller);
     public event OnGrabPressed onGrabPressed;
 
-    public delegate void OnGrabReleased(GameObject grabbedObject, GameObject controller);
+    public delegate void OnGrabReleased(GameObject controller);
     public event OnGrabReleased onGrabReleased;
 
 
@@ -39,7 +39,7 @@ public class PlayerControllerVR : MonoBehaviour
         {
             if (onGrabReleased != null)
             {
-                onGrabReleased(grabbableObjects[grabbableObjects.Count - 1], gameObject);
+                onGrabReleased(gameObject);
             }
         }
     }
